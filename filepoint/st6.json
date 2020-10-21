@@ -1,0 +1,1 @@
+{"Points":[{"comments":"","type":"POSITION","X":2744,"Y":574,"THETA":180},{"comments":"","type":"XY_ABSOLU","X":2744,"Y":574,"speed":400,"timeout":0,"action":"SortirBaguette_G","distance_tolerance":10,"angle_tolerance":1.0},{"comments":"","type":"XY_ABSOLU","X":1864,"Y":574,"speed":400,"timeout":0,"action":"null","distance_tolerance":10,"angle_tolerance":1.0}]}

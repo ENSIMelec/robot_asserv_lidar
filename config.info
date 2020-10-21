@@ -1,0 +1,160 @@
+asservissement {
+	; Temps d’attente entre chaque boucle d’asservissement, en ms.
+	; Attention : une valeur trop élevée sature le bus I2C !
+	delta_asserv 	5
+
+	temps_match 	100
+
+	nbAX12 			4
+
+	
+	;Raspberry
+	ipServeur  	127.0.0.1
+	port 			1111
+	
+	;1.5 mm erreur Y sur 2m
+	;CoeffCorrecteur 0.9963138
+	;monter le coef = monter erreur Y
+	; -4 mm error sur 2m
+	;CoeffCorrecteur 	0.9965138
+	
+	;1mm error sur 2m
+	;CoeffCorrecteur 	0.9989900
+	
+	;CoeffCorrecteur 	0.9999500
+	
+	;CoeffCorrecteur	0.9999999
+
+	;CoeffCorrecteur 	0.9953500
+	
+	;26/03/2020
+	;CoeffCorrecteur 	0.9031000
+	
+	;27/03/2020 (dont work for distance)
+	;CoeffCorrecteur 	0.9531000
+	;CoeffCorrecteur 	0.9531000
+	
+	; 16/05/20
+	;CoeffCorrecteur 	0.8800000
+	
+	; ---------------------- Odométrie --------------------------------------
+	
+	; precision sur l'avance en X en mm
+	;diametre_roue	32
+	;diametre_roue	37
+    diametre_roue	36.1
+
+	; precision sur l'avance en Y
+	;coeff_correcteur	1.0011862
+	;coeff_correcteur	0.9953500
+	;coeff_correcteur	0.9753500 (+54)
+	;coeff_correcteur	0.9793500 (09/10)
+    coeff_correcteur	0.9923500
+    
+	; combien de tics par 1 tour de roue?
+	resolution	516
+	
+	; distance en deux roue en mm
+	;entraxe	255
+	entraxe	300
+
+	; ---------------------- PID distance --------------------------------------
+    pid_kpdep 		1
+    pid_kidep 		0
+    pid_kddep 		0.5
+
+	; ---------------------- PID angle --------------------------------------
+	;pid_kia 		0.20
+	;pid_kda 		100
+	
+	;pid_kpa 		100
+	;pid_kia 		0.17
+	;pid_kda 		50
+	
+	;20 decembre
+	;pid_kpa 		270
+	;pid_kia 		0
+	;pid_kda 		50
+	
+	;9 janvier
+	;pid_kpa 		150
+	;pid_kia 		0
+	;pid_kda 		50
+	
+	;pid_kpa 		43
+	;pid_kia 		0.08
+	;pid_kda 		10
+	
+	;11/03/2020
+	;pid_kpa 		120
+	;pid_kia 		0.08
+	;pid_kda 		20
+	
+	;27/03/2020
+	;pid_kpa 		120
+	;pid_kia 		0.04
+	;pid_kda 		80
+	
+	pid_kpa 		140
+	pid_kia 		0.05
+	pid_kda 		40
+	
+	; PID acceleration angle (27/03/2020)
+	;pid_kpa 		3
+	;pid_kia 		0
+	;pid_kda 		1
+	; -----------------------------------------------------------------------------------
+	
+	; ---------------------- acceleration distance --------------------------------------
+	distance_speed_max 150
+	distance_acceleration_max 2
+	distance_deceleration_max 2
+	
+	; Coeff déterminant le début de la rampe de décélération en distance
+	distance_anticipation_gain 34
+
+	; erreur distance arrivé (mm)
+	distance_window 13
+
+	; ---------------------- acceleration angle (unité PWM) ----------------------------
+	angle_speed_max 20
+	angle_acceleration_max 1
+	angle_deceleration_max 1
+	
+	; Coeff déterminant le début de la rampe de décélération en rotation
+	angle_anticipation_gain 8
+	; ------------------------------------------------------------
+	
+	;au dela de 20 de p le pathfinding foire
+	pid_kpdepPathFinding	8
+	pid_kpdep 		30
+	pid_kidep 		0
+	pid_kddep 		7
+
+
+	; pid de position
+	pid_kppos 		2
+	pid_kipos 		0
+	pid_kdpos 		1
+
+	
+	; Réglages coefs déplacement
+
+	CoeffGLong 0.2174523603246652
+	CoeffDLong 0.2181108840854883
+	
+	CoeffAngl 0.0510457284650833
+
+	CoeffAnglD 0.0518380923726007
+	CoeffAnglG 0.0518358531317495
+
+	; Adresses cartes arduino
+	I2C_SERVOS  64
+	I2C_LANCEUR 7
+	I2C_MOTEURS 8
+	I2C_STEPPER 9
+
+	;Booleen pour attendre ou non la connexion de l'électron, l'expérience et le deuxième robot: 0 non, 1 oui (tjrs 0 pour le petit)
+	WAIT_DEVICES_CONNECTIONS 1
+	
+}

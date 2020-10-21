@@ -1,0 +1,1 @@
+{"Points":[{"comments":"","type":"POSITION","X":88,"Y":628,"THETA":0},{"comments":"","type":"THETA","THETA":-68,"speed":400,"timeout":0,"action":"null","angle_tolerance":1.0},{"comments":"","type":"XY_ABSOLU","X":164,"Y":808,"speed":400,"timeout":0,"action":"OuvrirPince_D","distance_tolerance":10,"angle_tolerance":1.0}]}
