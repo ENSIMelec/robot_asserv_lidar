@@ -256,7 +256,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
             lid->setDirectionMotor(controller.getm_direction());
             cout << "etat blockage " << (blocage.isBlocked()) << InitRobot::aruIsNotPush() << endl;
 
-            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush()) { //Si il y a e un obstacle genant
+            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush() && point.getLDetection()) { //Si il y a e un obstacle genant
                 weAreBlocked = true;
                 controller.motors_stop(); //Tant qu'on est bloqué
                 controller.set_trajectory(Point::Trajectory::LOCKED);

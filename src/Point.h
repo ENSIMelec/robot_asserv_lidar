@@ -44,6 +44,7 @@ public:
     void setSlipping(bool slip);
     bool getLDetection() const;
     void setLDetection(bool Detection);
+    int getScore() const;
     void setScore(int Score);
     
 
@@ -57,7 +58,7 @@ private:
     int m_speed;
     bool m_slip = false; // dérapage
     bool l_detection = false;
-    int score = 0;
+    int p_score = 0;
 
     string m_action;
     int m_timeout;

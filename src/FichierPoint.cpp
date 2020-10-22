@@ -101,8 +101,13 @@ vector<Point> FichierPoint::readPoints(string filename) {
         p.setMAction(ref(action));
         p.setSlipping(slipping);
 
+        //Detection et Score
+        p.setLDetection(detection);
+        p.setScore(score);
+
         //Point p(type, X, Y, angle, deltaDeplacement, deltaAngle, vitesse, sens, blocage, coefCourbe, lissage, derapage, timeOut, action, attAction);
         pts.push_back(p);
+
     }
 
     // point pour locker

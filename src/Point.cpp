@@ -92,7 +92,13 @@ void Point::setLDetection(bool Detection) {
     l_detection = Detection;
 }
 
-void Point::setScore(int Score){
-    score = Score;
+int Point::getScore() const {
+    return p_score;
 }
+
+void Point::setScore(int Score){
+    p_score = Score;
+}
+
+
 
