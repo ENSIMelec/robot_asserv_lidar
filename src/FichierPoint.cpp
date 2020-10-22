@@ -12,6 +12,8 @@ vector<Point> FichierPoint::readPoints(string filename) {
     float angle_tolerance;
     int speed;
     bool slipping;
+    bool detection;
+    int score;
     //string sens, blocage;
     //double coefCourbe;
     //bool lissage, derapage, attAction;
@@ -34,6 +36,10 @@ vector<Point> FichierPoint::readPoints(string filename) {
         timeout = 0;
         action = "null";
         slipping = false;
+        detection = false;
+        score = 0;
+        
+
 
         type = point.second.get<string>("type");
 
@@ -47,6 +53,8 @@ vector<Point> FichierPoint::readPoints(string filename) {
             timeout = point.second.get<int>("timeout");
             action = point.second.get<string>("action");
             slipping = point.second.get<bool>("slipping");
+            detection = point.second.get<bool>("detection");
+            score = point.second.get.get<int>("score");
             mTrajectory = Point::Trajectory::XY_ABSOLU;
 
         }
@@ -56,6 +64,8 @@ vector<Point> FichierPoint::readPoints(string filename) {
             speed = point.second.get<int>("speed");
             timeout = point.second.get<int>("timeout");
             action = point.second.get<string>("action");
+            detection = point.second.get<bool>("detection");
+            score = point.second.get.get<int>("score");
             mTrajectory = Point::Trajectory::THETA;
         }
         else if(type.compare("POSITION") == 0) {

@@ -84,3 +84,15 @@ void Point::setSlipping(bool slip) {
     m_slip = slip;
 }
 
+bool Point::getLDetection() const {
+    return l_detection;
+}
+
+void Point::setLDetection(bool Detection) {
+    l_detection = Detection;
+}
+
+void Point::setScore(int Score){
+    score = Score;
+}
+
