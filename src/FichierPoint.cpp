@@ -54,7 +54,7 @@ vector<Point> FichierPoint::readPoints(string filename) {
             action = point.second.get<string>("action");
             slipping = point.second.get<bool>("slipping");
             detection = point.second.get<bool>("detection");
-            score = point.second.get.get<int>("score");
+            score = point.second.get<int>("score");
             mTrajectory = Point::Trajectory::XY_ABSOLU;
 
         }
@@ -65,7 +65,7 @@ vector<Point> FichierPoint::readPoints(string filename) {
             timeout = point.second.get<int>("timeout");
             action = point.second.get<string>("action");
             detection = point.second.get<bool>("detection");
-            score = point.second.get.get<int>("score");
+            score = point.second.get<int>("score");
             mTrajectory = Point::Trajectory::THETA;
         }
         else if(type.compare("POSITION") == 0) {
