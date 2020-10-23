@@ -211,7 +211,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
     Point scorePoint(0,0,0, Point::Trajectory::NOTHING);
 	
 	const int FIN_MATCH_S = 100; // en secondes
-	const int DEPLOYER_PAV_S = 90; // en secondes
+	const int DEPLOYER_PAV_S = 95; // en secondes
 	// match time
     Timering matchTimer;
     matchTimer.start();
@@ -261,13 +261,23 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
             lid->setDirectionMotor(controller.getm_direction());
             cout << "etat blockage " << (blocage.isBlocked()) << InitRobot::aruIsNotPush() << endl;
 
-            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush() && point.getDetection()) { //Si il y a e un obstacle genant
+            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush() 
+                && point.getDetection() && matchTimer.elapsedSeconds() < FIN_MATCH_S) { //Si il y a e un obstacle genant
                 weAreBlocked = true;
                 controller.motors_stop(); //Tant qu'on est bloqué
                 controller.set_trajectory(Point::Trajectory::LOCKED);
                 //if(!controller.is_trajectory_reached())
 
                 controller.update();
+
+                if(matchTimer.elapsedSeconds() >= DEPLOYER_PAV_S && !deployed_pav) {
+                    cout << "Déployment du pavillon" << endl;
+			        // créer un thread qui effectue l'action
+			        actionEnCours = true;
+			        thread(actionThreadFunc, ref(actions), "HisserPavillon", ref(actionEnCours), ref(actionDone)).detach();
+                    deployed_pav = true;
+                    ecranUDP.addPoints(10,0);
+		        }
 
                 cout << endl << "************************* WeAreBlocked *************************" << endl;
                 cout << endl << blocage.isBlocked() << endl;

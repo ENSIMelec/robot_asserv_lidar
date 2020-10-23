@@ -119,7 +119,7 @@ void Lidar::Scan()
                 float distance_mm = nodes[pos].dist_mm_q2 / 4.0f;
 
                 // distance
-
+	
                 float dp_avant = distance_min *  m_direction * cosf(MathUtils::deg2rad(angle_degree)); //mm
                // float dp_arriere = distance_min * -cosf(MathUtils::deg2rad(angle_degree)); //mm
 
