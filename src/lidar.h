@@ -19,9 +19,9 @@ using namespace rp::standalone::rplidar;
 #endif
 
 // Plages de vitesse
-#define DISTANCE_MAX_SPEED 700
-#define DISTANCE_AVG_SPEED 600
-#define DISTANCE_LOW_SPEED 450
+#define DISTANCE_MAX_SPEED 500
+#define DISTANCE_AVG_SPEED 400
+#define DISTANCE_LOW_SPEED 650
 
 // Etats des obstacles
 #define ETAT_OBSTACLE_NONE 3
@@ -31,7 +31,7 @@ using namespace rp::standalone::rplidar;
 
 // Vitesse
 // Angle de détection de 90°
-#define ANGLE_KRABS 120
+#define ANGLE_KRABS 130
 
 class Lidar
 {

@@ -123,11 +123,13 @@ void Lidar::Scan()
                 float dp_avant = distance_min *  m_direction * cosf(MathUtils::deg2rad(angle_degree)); //mm
                // float dp_arriere = distance_min * -cosf(MathUtils::deg2rad(angle_degree)); //mm
 
-                if (dp_avant > distance_mm && distance_mm != 0.0) {
+                if (dp_avant > distance_mm && distance_mm != 0.0 
+				&& ((angle_degree<(ANGLE_KRABS/2) || angle_degree>(360 - ANGLE_KRABS/2)) || 
+					(angle_degree<(180 + ANGLE_KRABS/2) && angle_degree>(180 - ANGLE_KRABS/2)) )) {
                     distance_min = distance_mm;
                     //distance = distance_min;
                     angle = angle_degree;
-
+ 
                     /*if (dp_avant > distance_mm) {
                         detection_ob_direction = DetectionDirection::FORWARD;
                     } else

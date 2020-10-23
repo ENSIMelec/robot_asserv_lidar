@@ -251,6 +251,9 @@ void Controller::update_speed(float consigne_distance, float consigne_theta) {
     //détection de dérapage
     if(m_point.isSlipping()) {
 
+        m_slipping_left = false;
+        m_slipping_right = false;
+
         if(leftPWM <= -50 && abs(m_odometry.getLeftVel())<80){
             leftPWM = 0;
             m_slipping_left = true;

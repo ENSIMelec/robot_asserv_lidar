@@ -13,7 +13,7 @@ int BlocageManager::isBlocked() const
 {
 	int avant;
 	int arriere;
-	int Table_AVG[60]; // Tableau qui sert � calculer la moyenne des valeurs retourn�es
+	int Table_AVG[50]; // Tableau qui sert � calculer la moyenne des valeurs retourn�es
 					   // par le lidar pour �viter les valeurs perdues
 	float AVG_speed_detection = 0;
 	int N_speed_STP;
@@ -25,7 +25,7 @@ int BlocageManager::isBlocked() const
 
 		if (lid->getDirection() == 1) {
 			int i_Table_AVG = 0;
-			while (lid->getDirection() == 1 && i_Table_AVG < 60) {
+			while (lid->getDirection() == 1 && i_Table_AVG < 50) {
 				AVG_speed_detection += lid->etat; //ANgle de detection
 				i_Table_AVG++;
 				
@@ -63,7 +63,7 @@ int BlocageManager::isBlocked() const
 
 	if(lid->getDirection() == -1){
 		int i_Table_AVG = 0;
-		while (lid->getDirection() == -1 && i_Table_AVG < 60) {
+		while (lid->getDirection() == -1 && i_Table_AVG < 50) {
 			AVG_speed_detection += lid->etat;
 			i_Table_AVG++;
 			
