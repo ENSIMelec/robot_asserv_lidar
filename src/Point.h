@@ -42,11 +42,11 @@ public:
     Point::Trajectory getTrajectory() const;
     bool isSlipping() const;
     void setSlipping(bool slip);
-    bool getLDetection() const;
-    void setLDetection(bool Detection);
+    //
     int getScore() const;
-    void setScore(int Score);
-    
+    void setScore(int score);
+    void setDetection(bool detection);
+    bool getDetection() const;
 
 private:
 
@@ -57,8 +57,9 @@ private:
     float m_angle_tolerance;
     int m_speed;
     bool m_slip = false; // dérapage
-    bool l_detection = false;
-    int p_score = 0;
+
+    bool m_detection = false;
+    int m_score = 0;
 
     string m_action;
     int m_timeout;

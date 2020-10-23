@@ -11,7 +11,8 @@
 #include "Point.h"
 
 class FichierPoint {
-public :
+
+public:
 	static std::vector<Point> readPoints(std::string);
 };
 

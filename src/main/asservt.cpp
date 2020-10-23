@@ -185,7 +185,8 @@ void actionThreadFunc(ActionManager& actionManager, string filename, bool& actio
 void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actions, ClientUDP &clientUdp) {
 
     cout << "jouerMatch launch" << endl;
-    //ClientUDP phare("172.24.1.148", 1234);
+    ClientUDP ecranUDP("127.0.0.1", 1111);
+    //ecranUDP.sendMessage("P 30");
 	while(InitRobot::jackIsPresent()){
         sleepMillis(1);
     }
@@ -207,7 +208,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
 
     int strategyIndex = 0;
     Point point(0,0,0, Point::Trajectory::NOTHING);
-
+    Point scorePoint(0,0,0, Point::Trajectory::NOTHING);
 	
 	const int FIN_MATCH_S = 100; // en secondes
 	const int DEPLOYER_PAV_S = 90; // en secondes
@@ -228,6 +229,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
 			actionEnCours = true;
 			thread(actionThreadFunc, ref(actions), "HisserPavillon", ref(actionEnCours), ref(actionDone)).detach();
             deployed_pav = true;
+            ecranUDP.addPoints(10,0);
 		}
 		// vérification de fin match
 		// vérification asservissement
@@ -246,6 +248,9 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
                 controller.set_point_o(point);
 
                 strategyIndex++;
+
+                scorePoint =  strategy[strategyIndex-1];
+                ecranUDP.addPoints(scorePoint.getScore(),0);
             }
 
 			      
@@ -256,7 +261,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
             lid->setDirectionMotor(controller.getm_direction());
             cout << "etat blockage " << (blocage.isBlocked()) << InitRobot::aruIsNotPush() << endl;
 
-            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush() && point.getLDetection()) { //Si il y a e un obstacle genant
+            while ((blocage.isBlocked() < 2) && !forcing_stop && InitRobot::aruIsNotPush() && point.getDetection()) { //Si il y a e un obstacle genant
                 weAreBlocked = true;
                 controller.motors_stop(); //Tant qu'on est bloqué
                 controller.set_trajectory(Point::Trajectory::LOCKED);

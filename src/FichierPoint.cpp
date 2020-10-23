@@ -38,7 +38,6 @@ vector<Point> FichierPoint::readPoints(string filename) {
         slipping = false;
         detection = false;
         score = 0;
-        
 
 
         type = point.second.get<string>("type");
@@ -66,6 +65,7 @@ vector<Point> FichierPoint::readPoints(string filename) {
             action = point.second.get<string>("action");
             detection = point.second.get<bool>("detection");
             score = point.second.get<int>("score");
+
             mTrajectory = Point::Trajectory::THETA;
         }
         else if(type.compare("POSITION") == 0) {
@@ -102,12 +102,11 @@ vector<Point> FichierPoint::readPoints(string filename) {
         p.setSlipping(slipping);
 
         //Detection et Score
-        p.setLDetection(detection);
+        p.setDetection(detection);
         p.setScore(score);
 
         //Point p(type, X, Y, angle, deltaDeplacement, deltaAngle, vitesse, sens, blocage, coefCourbe, lissage, derapage, timeOut, action, attAction);
         pts.push_back(p);
-
     }
 
     // point pour locker
