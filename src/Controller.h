@@ -24,7 +24,7 @@ public:
      * @param motor
      * @param config
     */
-    Controller(ICodeurManager& codeurs, MoteurManager& motor, Config& config);
+    Controller(ICodeurManager& codeurs, MoteurManager& motor);
     /** enum Direction
     *  \brief Sens de déplacement pour le robot.
     */

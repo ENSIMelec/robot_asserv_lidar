@@ -13,7 +13,7 @@ using namespace std;
 
 #include "ActionManager.h"
 #include "ClientUDP.h"
-#include "Config.h"
+#include "Configuration.h"
 #include "SerialCodeurManager.h"
 
 /*********************************** Define ************************************/
@@ -27,7 +27,7 @@ using namespace std;
 /***************************** Variables globales ******************************/
 
 bool forcing_stop;
-string PATH = "/home/pi/robot_asserv/";
+string PATH = "/home/pi/robot_asserv_lidar/";
 
 /********************************* prototypes **********************************/
 
@@ -56,11 +56,12 @@ int main(int argc, char **argv) {
 	// ATTENTION: à appeler absolument avant d’initialiser les managers
 	wiringPiSetupGpio();
 
-	Config config;
-	config.loadFromFile(PATH + "config.info"); //Charge la configuration à partir du fichier config.info
+	//Config config;
+	//config.loadFromFile(PATH + "config.info"); //Charge la configuration à partir du fichier config.info
 
-	int i2cS = wiringPiI2CSetup(config.get_I2C_SERVOS());
-	int i2cSt = wiringPiI2CSetup(9); //Adresse i2c du nema, devrait passer dans le fichier conf si jamais
+	int i2cS = wiringPiI2CSetup(Configuration::instance().getInt("I2C_SERVOS"));
+	int i2cSt = wiringPiI2CSetup(Configuration::instance().getInt("I2C_STEPPER"));
+	//Adresse i2c du nema, devrait passer dans le fichier conf si jamais
 		
 	if(i2cS < 0 || i2cSt < 0)
 		return EXIT_FAIL_I2C;
@@ -78,11 +79,11 @@ int main(int argc, char **argv) {
 	sprintf(nomFile, "%s", argv[1]); //fichier action à lire
 
 	//Setup Connexion udp to Serveur
-	string ipServeur = config.getIpServeur();
-	int portServeur = config.getPort();
+	string ipServeur = "127.0.0.1";
+	int portServeur = 1111;
 	ClientUDP client(ipServeur, portServeur);
 
-	ActionManager actions(i2cS, i2cSt, config.getNbAX12(), client);
+	ActionManager actions(i2cS, i2cSt, 4, client);
 
 	pinMode(PIN_ARU, INPUT);
 

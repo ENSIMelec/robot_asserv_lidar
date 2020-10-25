@@ -25,7 +25,7 @@ int BlocageManager::isBlocked() const
 
 		if (lid->getDirection() == 1) {
 			int i_Table_AVG = 0;
-			while (lid->getDirection() == 1 && i_Table_AVG < 30) {
+			while (lid->getDirection() == 1 && i_Table_AVG < 20) {
 				AVG_speed_detection += lid->etat; //ANgle de detection
 				i_Table_AVG++;
 				
@@ -63,7 +63,7 @@ int BlocageManager::isBlocked() const
 
 	if(lid->getDirection() == -1){
 		int i_Table_AVG = 0;
-		while (lid->getDirection() == -1 && i_Table_AVG < 30) {
+		while (lid->getDirection() == -1 && i_Table_AVG < 20) {
 			AVG_speed_detection += lid->etat;
 			i_Table_AVG++;
 			

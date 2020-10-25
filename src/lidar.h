@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <math.h>
 #include "Controller.h"
+#include "InitRobot.h"
 
 using namespace std;
 using namespace rp::standalone::rplidar;

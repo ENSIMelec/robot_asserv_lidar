@@ -19,6 +19,8 @@ public:
     void addPoints(int pts, int proba);
     int getPoints();
     int points;
+    bool sendTo(std::string str, std::string ip, int port);
+    void setTime(int time);
 
 private:
     //Log ipServeur

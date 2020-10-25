@@ -4,9 +4,9 @@ using namespace std;
 
 //Constructeur par défaut : utilise la liste d'initialisation pour init les classes utilisées dans la classe
 ActionManager::ActionManager(int i2c_Servos, int i2c_Stepper, int nbAX12, ClientUDP& udp) :
-	client(udp), servos(i2c_Servos), stepper(),  AX12(nbAX12)
+	client(udp), servos(i2c_Servos),  AX12(nbAX12)
 {
-	stepper.goHome();
+	//stepper.goHome();
 	servos.servoInitialisation();
 	printf("Constructeur action");
 }
@@ -45,8 +45,8 @@ void ActionManager::action(string filname) {
 				break;
 			case 'N':
 				// Ici angleAction represente la hauteur en mm
-				stepper.setSpeed(forceAction);
-				stepper.setPosition(angleAction);
+				//stepper.setSpeed(forceAction);
+				//stepper.setPosition(angleAction);
 
 				//client.sendMessage("I Stepper hauteur" + to_string(angleAction));
 				break;

@@ -1,1 +1,1 @@
-{"Points":[{"comments":"","type":"POSITION","X":2489,"Y":1047,"THETA":180},{"comments":"","type":"XY_ABSOLU","X":285,"Y":1047,"speed":400,"timeout":0,"action":"null","distance_tolerance":10,"angle_tolerance":1.0,"slipping":false}]}
+{"Points":[{"comments":"","type":"POSITION","X":2489,"Y":1047,"THETA":180},{"comments":"","type":"XY_ABSOLU","X":285,"Y":1047,"speed":400,"action":"null","distance_tolerance":10,"angle_tolerance":1.0,"slipping":false,"detection":false,"score":0,"timeout":0}]}

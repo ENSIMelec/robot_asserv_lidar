@@ -18,8 +18,8 @@
 
 using namespace std;
 
-Controller::Controller(ICodeurManager& codeurs, MoteurManager& motor, Config& config):
-        m_odometry(codeurs), m_motor(motor), m_config(config) {
+Controller::Controller(ICodeurManager& codeurs, MoteurManager& motor):
+        m_odometry(codeurs), m_motor(motor) {
     // Init PID Controllers
 
     this->m_maxPWM = 150;
@@ -28,16 +28,16 @@ Controller::Controller(ICodeurManager& codeurs, MoteurManager& motor, Config& co
 
     // Polar position PID
     this->m_distancePID = PID(
-            m_config.getPIDkpDep(),
-            m_config.getPIDkiDep(),
-            m_config.getPIDkdDep(),
+            Configuration::instance().getFloat("pid_kpdep"),
+            Configuration::instance().getFloat("pid_kidep"),
+            Configuration::instance().getFloat("pid_kddep"),
             -m_maxPWM,
             m_maxPWM
     );
     this->m_anglePID = PID(
-            m_config.getPIDkpA(),
-            m_config.getPIDkiA(),
-            m_config.getPIDkdA(),
+            Configuration::instance().getFloat("pid_kpa"),
+            Configuration::instance().getFloat("pid_kia"),
+            Configuration::instance().getFloat("pid_kda"),
             -m_maxPWMR,
             m_maxPWMR
     );

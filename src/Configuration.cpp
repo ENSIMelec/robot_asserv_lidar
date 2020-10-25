@@ -8,7 +8,7 @@ namespace pt = boost::property_tree;
 
 Configuration::Configuration() {
     // Chargement depuis un fichier au format INFO
-    pt::read_info("config.info", this->tree);
+    pt::read_info("/home/pi/robot_asserv_lidar/config.info", this->tree);
 }
 double Configuration::getDouble(std::string string) {
 

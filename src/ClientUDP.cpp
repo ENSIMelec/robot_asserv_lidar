@@ -35,7 +35,26 @@ string ClientUDP::receiveMessage() {
     }
     return string(buffer);
 }
+bool ClientUDP::sendTo(string str, string ip, int port) {
 
+    cout << "Setup des infos client :"<<ip<<":"<<port<<endl;
+    struct sockaddr_in client;
+    // filling client info
+    client.sin_family = AF_INET;
+    client.sin_port = htons(port);
+    client.sin_addr.s_addr = inet_addr(ip.c_str());
+
+    int ret = sendto(sockfd, str.c_str(), str.size()+1, 0,(struct sockaddr *)&client, sizeof(client));
+    if (ret <= 0)
+    {
+        cout << "Erreur lors de l'envoi au serveur de : ["<< str <<"]"<<endl;
+        return false;
+    }else{
+        //cout << "Envoie au serveur de : ["<< str <<"]"<<endl;
+        return true;
+    }
+
+}
 bool ClientUDP::sendMessage(string str){
 	int ret = sendto(sockfd, str.c_str(), str.size()+1, 0,(struct sockaddr *)&serveur, sizeof(serveur));
     sendto(sockfd, str.c_str(), str.size()+1, 0,(struct sockaddr *)&serveurRobot, sizeof(serveurRobot));
@@ -121,4 +140,9 @@ void ClientUDP::setPoints(int pts){
 int ClientUDP::getPoints(){
     /*return calculPoints(points);*/
     return points; 
+}
+
+void ClientUDP::setTime(int time){
+    sendMessage("T "+to_string(time));
+    cout << "Time :" << time << endl;
 }

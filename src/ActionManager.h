@@ -12,8 +12,6 @@
 #include "FichierAction.h"
 #include "LanceurManager.h"
 #include "ServoManager.h"
-#include "StepperManager.h"
-
 
 class ActionManager
 {
@@ -27,7 +25,7 @@ private:
 	void sleepMillis(int millis);
 	ClientUDP &client;
 	ServoManager servos;
-	StepperManager stepper;
+	//StepperManager stepper;
 	AX12Manager AX12;
 };
 

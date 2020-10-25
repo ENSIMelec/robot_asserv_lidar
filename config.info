@@ -42,14 +42,16 @@ asservissement {
 	; precision sur l'avance en X en mm
 	;diametre_roue	32
 	;diametre_roue	37
-    diametre_roue	36.1
+    ;diametre_roue	36.1
+	diametre_roue	36.2	(23/10)
 
 	; precision sur l'avance en Y
 	;coeff_correcteur	1.0011862
 	;coeff_correcteur	0.9953500
 	;coeff_correcteur	0.9753500 (+54)
 	;coeff_correcteur	0.9793500 (09/10)
-    coeff_correcteur	0.9923500
+    ;coeff_correcteur	0.9923500 
+	coeff_correcteur	0.9955500 (23/10)
     
 	; combien de tics par 1 tour de roue?
 	resolution	516

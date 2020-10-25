@@ -55,6 +55,7 @@ Lidar::~Lidar()
 void Lidar::stopMotor()
 {
 	drv->stopMotor();
+
 	cout << "stop motor lidar " << endl;
 }
 
@@ -98,7 +99,7 @@ void Lidar::Scan()
     drv->startScan(0,1);
     float distance_min = 0;
 
-    while(1) {
+    while(InitRobot::aruIsNotPush()) {
 		
 		distance_min = 65000;
 		op_result = drv->grabScanDataHq(nodes, count,2500);
@@ -119,8 +120,15 @@ void Lidar::Scan()
                 float distance_mm = nodes[pos].dist_mm_q2 / 4.0f;
 
                 // distance
-	
-                float dp_avant = distance_min *  m_direction * cosf(MathUtils::deg2rad(angle_degree)); //mm
+
+                float dp_avant;
+				if(m_direction != 0){
+					dp_avant = distance_min *  m_direction * cosf(MathUtils::deg2rad(angle_degree)); //mm
+				}
+				else{
+				 	dp_avant = std::abs(distance_min * cosf(MathUtils::deg2rad(angle_degree)));
+				 } //mm
+				 
                // float dp_arriere = distance_min * -cosf(MathUtils::deg2rad(angle_degree)); //mm
 
                 if (dp_avant > distance_mm && distance_mm != 0.0 
@@ -151,7 +159,8 @@ void Lidar::Scan()
 
             //cout << "Angle : " << angle << " - Distance min : " << distance_min  << " Direction detection " << m_direction << " - Etat" << etat << endl;
         }
-	}		
+	}	
+	stopMotor();	
 }
 
 

@@ -24,7 +24,8 @@ using namespace std;
 #include "Timering.cpp"
 #include "lidar.h"
 #include "BlocageManager.h"
-#include "InitRobot.h"						   
+#include "InitRobot.h"
+#include "TCPServer.h"
 
 /*********************************** Define ************************************/
 
@@ -38,6 +39,8 @@ using namespace std;
 bool forcing_stop;
 unsigned int deltaAsservTimer;
 unsigned int nbActionFileExecuted;
+enum Girouette { NORD, SUD, NONE };
+Girouette girouette_direction = Girouette::NONE;
 
 string PATH = "/home/pi/robot_asserv_lidar/";
 
@@ -46,8 +49,10 @@ string PATH = "/home/pi/robot_asserv_lidar/";
 bool argc_control(int argc);
 bool argv_contains_dummy(int argc, char** argv);
 void actionThreadFunc(ActionManager& actionManager, string filename, bool& actionEnCours, bool& actionDone);
+void girouetteThread();
 
-void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actions, ClientUDP &clientUdp);
+void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actions, ClientUDP &clientUdp,
+                ClientUDP &ecranUDP);
 
 void stopSignal(int signal);
 void sleepMillis(int millis);
@@ -82,13 +87,12 @@ int main(int argc, char **argv) {
 	// ATTENTION: à appeler absolument avant d’initialiser les managers
 	wiringPiSetupGpio();
 
-	Config config;
-	config.loadFromFile("config.info"); //Charge la configuration à partir du fichier config.info
+	//Config config;
+	//config.loadFromFile("config.info"); //Charge la configuration à partir du fichier config.info
     int I2C_MOTEURS = 8;
 
 	int i2cM = wiringPiI2CSetup(I2C_MOTEURS);
-
-    int i2cS = wiringPiI2CSetup(config.get_I2C_SERVOS());
+    int i2cS = wiringPiI2CSetup(Configuration::instance().getInt("I2C_SERVOS"));
     //Adresse i2c du nema, devrait passer dans le fichier conf si jamais
     int i2cSt = wiringPiI2CSetup(9);
 
@@ -117,12 +121,12 @@ int main(int argc, char **argv) {
     int portServeur = 90;
     ClientUDP client(ipServeur, portServeur);
 
-    ActionManager actions(i2cS, i2cSt, config.getNbAX12(), client);
+    ActionManager actions(i2cS, i2cSt, 4, client);
 
    	//timer temps;
 
-    deltaAsservTimer = config.getDeltaAsserv();
-    Controller controller(codeurs, moteurs, config);
+    deltaAsservTimer = Configuration::instance().getInt("delta_asserv");
+    Controller controller(codeurs, moteurs);
     Odometry odometry(codeurs);
 
     // charger les points pour la stratégie
@@ -145,7 +149,9 @@ int main(int argc, char **argv) {
 	//codeurs.reset();
 	cout <<"Codeur reset = done"<<endl;
 
-	jouerMatch(ref(controller), odometry, actions, client);
+    ClientUDP ecranUDP("127.0.0.1", 1111);
+
+	jouerMatch(ref(controller), odometry, actions, client, ecranUDP);
 
 	lid->stopMotor();
     delete lid;
@@ -172,7 +178,25 @@ int main(int argc, char **argv) {
 
 
 /////////////////////////// FIN PROGRAMME PRINCIPAL /////////////////////////////
+/************************ Girouette *****************************/
+void girouetteThread() {
+    TCPServer tcpServer(1200);
+    // connected then
+    if(tcpServer.accept()) {
+        tcpServer.send("Hello from krabs");
+    }
+    string direction = tcpServer.read();
+    // closes after receiving
+    tcpServer.close();
 
+    if(direction.compare("Nord") == 0)
+        girouette_direction = Girouette::NORD;
+    else
+        girouette_direction = Girouette::SUD;
+
+    cout << "Direction : " << direction << endl;
+}
+/************************ Action *****************************/
 void actionThreadFunc(ActionManager& actionManager, string filename, bool& actionEnCours, bool& actionDone) {
     cout << "Debut du THREAD action " << filename << endl;
     actionManager.action(PATH + "fileaction/" + filename + ".as");
@@ -182,11 +206,11 @@ void actionThreadFunc(ActionManager& actionManager, string filename, bool& actio
     return;
 }
 
-void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actions, ClientUDP &clientUdp) {
+void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actions, ClientUDP &clientUdp,
+                ClientUDP &ecranUDP) {
 
     cout << "jouerMatch launch" << endl;
-    ClientUDP ecranUDP("127.0.0.1", 1111);
-    //ecranUDP.sendMessage("P 30");
+
 	while(InitRobot::jackIsPresent()){
         sleepMillis(1);
     }
@@ -209,20 +233,29 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
     int strategyIndex = 0;
     Point point(0,0,0, Point::Trajectory::NOTHING);
     Point scorePoint(0,0,0, Point::Trajectory::NOTHING);
-	
+
 	const int FIN_MATCH_S = 100; // en secondes
+
 	const int DEPLOYER_PAV_S = 95; // en secondes
+    bool deployed_pav = false;
+
+    const int LECTURE_GIRO = 1; // en secondes
+    bool lecture_giro = false;
+
+    const int STRAT_GIRO = 10; // en secondes
+    bool strat_giro = false;
+
 	// match time
     Timering matchTimer;
     matchTimer.start();
 
-    bool deployed_pav = false;
     // baisser le pavillon au début du match
     thread(actionThreadFunc, ref(actions), "BaisserPavillon", ref(actionEnCours), ref(actionDone)).detach();
 
     while(!forcing_stop && InitRobot::aruIsNotPush() && matchTimer.elapsedSeconds() < FIN_MATCH_S) {
         //cout << "time elapsed(s): " << matchTimer.elapsedSeconds() << endl;
-		// déployer le pavillon
+
+		// Déployer le pavillon
 		if(matchTimer.elapsedSeconds() >= DEPLOYER_PAV_S && !deployed_pav) {
             cout << "Déployment du pavillon" << endl;
 			// créer un thread qui effectue l'action
@@ -231,6 +264,46 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
             deployed_pav = true;
             ecranUDP.addPoints(10,0);
 		}
+
+		// Lecture de la girouette
+		if(matchTimer.elapsedSeconds() >= LECTURE_GIRO && !lecture_giro) {
+		    // lancement un serveur TCP+ récupération de la valeur
+            thread(girouetteThread).detach();
+            lecture_giro = true;
+		}
+		// Lancement stratégie girouette
+        /*if(matchTimer.elapsedSeconds() >= STRAT_GIRO && !strat_giro) {
+            // delete all points from vector
+            cout << "Direction girouette (lancement strat): " << girouette_direction << endl;
+            Point point_sud_1(0,0,90, Point::Trajectory::THETA);
+            Point point_sud_2(2855,604,0, Point::Trajectory::XY_ABSOLU);
+
+            Point point_nord_1(0,0,-90, Point::Trajectory::THETA);
+            Point point_nord_2(2825,1720,0, Point::Trajectory::XY_ABSOLU);
+            Point pblocked(0,0,0, Point::Trajectory::LOCKED);
+
+            // clear all point
+            strategy.clear();
+            strategyIndex=0;
+
+            switch (girouette_direction) {
+                case NORD:
+                    strategy.push_back(point_nord_1);
+                    strategy.push_back(point_nord_2);
+                    strategy.push_back(pblocked);
+                    break;
+                case SUD:
+                    strategy.push_back(point_sud_1);
+                    strategy.push_back(point_sud_2);
+                    strategy.push_back(pblocked);
+                    break;
+                case NONE:
+                    break;
+            }
+
+            strat_giro = true;
+        }*/
+
 		// vérification de fin match
 		// vérification asservissement
         if(strategy.size() >= strategyIndex+1  && asservTimer.elapsed_ms() >= deltaAsservTimer) {
@@ -270,6 +343,8 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
 
                 controller.update();
 
+                //ecranUDP.setTime(100-matchTimer.elapsedSeconds());
+
                 if(matchTimer.elapsedSeconds() >= DEPLOYER_PAV_S && !deployed_pav) {
                     cout << "Déployment du pavillon" << endl;
 			        // créer un thread qui effectue l'action
@@ -284,6 +359,7 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
                 cout << endl << controller.getm_direction() << endl;
                 sleepMillis(10);
             }
+
             if(weAreBlocked) {
                 controller.set_trajectory(point.getTrajectory());
             }
@@ -323,6 +399,8 @@ void jouerMatch(Controller& controller, Odometry& odometry, ActionManager& actio
             asservTimer.restart();
         }
 	}
+
+    //ecranUDP.setTime(0);
 
     std::cout << "End of boucle!" << endl;
     sleepMillis(20);
